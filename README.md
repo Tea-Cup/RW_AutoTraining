@@ -1,6 +1,6 @@
-[![Steam Workshop|Really Custom Portraits](https://img.shields.io/steam/subscriptions/3475354312?style=for-the-badge&logo=steam&label=Auto%20Training&labelColor=blue
-)](https://steamcommunity.com/sharedfiles/filedetails/?id=3475354312)
-[![Last Update Badge](https://img.shields.io/steam/update-date/3475354312?style=for-the-badge&label=Last%20update)](https://github.com/Tea-Cup/RW_AutoTraining/releases/latest)
+[![Steam Workshop|Auto Training](https://img.shields.io/steam/subscriptions/3475428845?style=for-the-badge&logo=steam&label=Auto%20Training&labelColor=blue
+)](https://steamcommunity.com/sharedfiles/filedetails/?id=3475428845)
+[![Last Update Badge](https://img.shields.io/steam/update-date/3475428845?style=for-the-badge&label=Last%20update)](https://github.com/Tea-Cup/RW_AutoTraining/releases/latest)
 
 Allows an automatic setting of checkmarks in an animal Training menu.
 
