@@ -8,6 +8,7 @@ namespace Foxy.AutoTraining {
 		public static void Prefix(Faction __instance, Pawn p) {
 			if (__instance != Faction.OfPlayerSilentFail) return;
 			if (!p.RaceProps.Animal || p.IsMutant) return;
+			if (Settings.Instance.ignored.Contains(p.kindDef)) return;
 			foreach(TrainableDef td in TrainableUtility.TrainableDefsInListOrder) {
 				if (p.training.CanAssignToTrain(td).Accepted) {
 					if (IsUnwanted(td)) continue;
