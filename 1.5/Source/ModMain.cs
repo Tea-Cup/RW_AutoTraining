@@ -59,7 +59,7 @@ namespace Foxy.AutoTraining {
 		}
 
 		private void DrawList(Listing_Standard listing) {
-			int count = Settings.ignored.Count;
+			int count = Settings.IgnoredDefs.Count;
 			Rect listRect = listing.GetRect(5 * Text.LineHeight);
 			Rect viewRect = new Rect(0, 0, listRect.width - 32f, count * Text.LineHeight);
 			Rect rowRect = viewRect.TopPartPixels(Text.LineHeight);
@@ -68,7 +68,7 @@ namespace Foxy.AutoTraining {
 
 			PawnKindDef removed = null;
 			bool even = false;
-			foreach (PawnKindDef def in Settings.ignored) {
+			foreach (PawnKindDef def in Settings.IgnoredDefs) {
 				bool hover = Mouse.IsOver(rowRect);
 				if (hover || even) {
 					Widgets.DrawRectFast(new Rect(0, rowRect.y, listRect.width - 16f, rowRect.height), hover ? HoverColor : EvenColor);
@@ -99,7 +99,7 @@ namespace Foxy.AutoTraining {
 				if (hover || even) {
 					Widgets.DrawRectFast(new Rect(0, rowRect.y, inRect.width - 16f, rowRect.height), hover ? HoverColor : EvenColor);
 				}
-				bool ignored = Settings.ignored.Contains(def);
+				bool ignored = Settings.IgnoredDefs.Contains(def);
 				rowRect.SplitVertically(rowRect.width - Text.LineHeight, out Rect leftRect, out Rect buttonRect);
 				rowRect.y += Text.LineHeight;
 				Widgets.LabelFit(leftRect.LeftHalf(), def.defName);
@@ -115,11 +115,11 @@ namespace Foxy.AutoTraining {
 		}
 
 		private void AddIgnoreDef(PawnKindDef def) {
-			Settings.ignored.Add(def);
+			Settings.IgnoredDefs.Add(def);
 			list_scroll = Vector2.zero;
 		}
 		private void RemoveIgnoreDef(PawnKindDef def) {
-			Settings.ignored.Remove(def);
+			Settings.IgnoredDefs.Remove(def);
 			list_scroll = Vector2.zero;
 		}
 
@@ -129,7 +129,7 @@ namespace Foxy.AutoTraining {
 			filter_scroll = Vector2.zero;
 			if (string.IsNullOrWhiteSpace(input)) return;
 			foreach (PawnKindDef def in DefDatabase<PawnKindDef>.AllDefsListForReading) {
-				if (!def.RaceProps.Animal || def.mutant != null) continue;
+				if (!def.IsAnimal()) continue;
 				bool matchesDef = def.defName.ToLower().Contains(input);
 				bool matchesName = def.label.ToLower().Contains(input);
 				if (matchesDef || matchesName) filter.Add(def);

@@ -20,6 +20,10 @@ All training is checked by default.
 
 # ![Changelog](https://i.postimg.cc/k4T4mtyF/h-Changelog.png)
 
+#### 11.06.25
+
+- Reinforced against nulls.
+
 #### 10.06.25
 
 - Settings to ignore defs.

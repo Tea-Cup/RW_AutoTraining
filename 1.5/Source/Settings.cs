@@ -12,47 +12,53 @@ namespace Foxy.AutoTraining {
 				return instance;
 			}
 		}
+		private static List<string> IgnoredDefNames {
+			get {
+				if (Instance.filter == null) Instance.filter = new List<string>();
+				return Instance.filter;
+			}
+		}
+		public static List<PawnKindDef> IgnoredDefs {
+			get {
+				if (Instance.ignored == null) Instance.ignored = new List<PawnKindDef>();
+				return Instance.ignored;
+			}
+		}
 
 		private HashSet<string> unwanted = null;
 		private List<string> filter = null;
 
-		public List<PawnKindDef> ignored = null;
+		private List<PawnKindDef> ignored = null;
 
 		public override void ExposeData() {
-			if (Scribe.mode == LoadSaveMode.Saving) UpdateFilter();
+			UpdateFilter();
 			Scribe_Collections.Look(ref unwanted, "unwanted", LookMode.Value);
 			Scribe_Collections.Look(ref filter, "filter", LookMode.Value);
-			if (Scribe.mode == LoadSaveMode.PostLoadInit) UpdateIgnored();
+			UpdateIgnored();
 		}
 
-		private void EnsureNotNull() {
-			if (filter == null) filter = new List<string>();
-			if (ignored == null) ignored = new List<PawnKindDef>();
+		private static void UpdateFilter() {
+			IgnoredDefNames.Clear();
+			IgnoredDefNames.AddRange(IgnoredDefs.Select(x => x.defName));
 		}
-		private void UpdateFilter() {
-			EnsureNotNull();
-			filter.Clear();
-			filter.AddRange(ignored.Select(x => x.defName));
-		}
-		private void UpdateIgnored() {
-			EnsureNotNull();
-			ignored.Clear();
-			foreach (string defname in filter) {
+		private static void UpdateIgnored() {
+			IgnoredDefs.Clear();
+			foreach (string defname in IgnoredDefNames) {
 				PawnKindDef def = DefDatabase<PawnKindDef>.GetNamed(defname, false);
-				if (def != null) ignored.Add(def);
+				if (def != null) IgnoredDefs.Add(def);
 			}
 		}
 
-		public bool IsUnwanted(TrainableDef td) {
-			return unwanted?.Contains(td.defName) ?? false;
+		public static bool IsUnwanted(TrainableDef td) {
+			return Instance.unwanted?.Contains(td.defName) ?? false;
 		}
 
-		public void SetUnwanted(TrainableDef td, bool value) {
+		public static void SetUnwanted(TrainableDef td, bool value) {
 			if (value) {
-				if (unwanted == null) unwanted = new HashSet<string>();
-				unwanted.Add(td.defName);
+				if (Instance.unwanted == null) Instance.unwanted = new HashSet<string>();
+				Instance.unwanted.Add(td.defName);
 			} else {
-				unwanted?.Remove(td.defName);
+				Instance.unwanted?.Remove(td.defName);
 			}
 		}
 	}
