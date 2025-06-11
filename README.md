@@ -20,6 +20,10 @@ All training is checked by default.
 
 # ![Changelog](https://i.postimg.cc/k4T4mtyF/h-Changelog.png)
 
+#### 12.06.25
+
+- 1.6.**4488** support.
+
 #### 11.06.25
 
 - Reinforced against nulls.
