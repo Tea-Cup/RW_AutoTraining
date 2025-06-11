@@ -25,15 +25,15 @@ namespace Foxy.AutoTraining {
 			}
 		}
 
-		private HashSet<string> unwanted = null;
-		private List<string> filter = null;
+		private HashSet<string> unwanted = new HashSet<string>();
+		private List<string> filter = new List<string>();
 
-		private List<PawnKindDef> ignored = null;
+		private List<PawnKindDef> ignored = new List<PawnKindDef>();
 
 		public override void ExposeData() {
-			UpdateFilter();
-			Scribe_Collections.Look(ref unwanted, "unwanted", LookMode.Value);
-			Scribe_Collections.Look(ref filter, "filter", LookMode.Value);
+			base.ExposeData();
+			Scribe_Collections.Look(ref unwanted, "unwanted");
+			Scribe_Collections.Look(ref filter, "filter");
 			UpdateIgnored();
 		}
 
@@ -50,7 +50,10 @@ namespace Foxy.AutoTraining {
 		}
 
 		public static bool IsUnwanted(TrainableDef td) {
-			return Instance.unwanted?.Contains(td.defName) ?? false;
+			Log.Message($"[AutoTraining] Is {td.LabelCap} marked as unwanted?");
+			bool result = Instance.unwanted?.Contains(td.defName) ?? false;
+			Log.Message($"[AutoTraining] {(result?"Yes":"No")}.");
+			return result;
 		}
 
 		public static void SetUnwanted(TrainableDef td, bool value) {
