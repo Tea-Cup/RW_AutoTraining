@@ -13,6 +13,7 @@ namespace Foxy.AutoTraining {
 		private string settings_input = string.Empty;
 		private Vector2 filter_scroll = Vector2.zero;
 		private Vector2 list_scroll = Vector2.zero;
+		private List<PawnKindDef> ignored = null;
 		private readonly List<PawnKindDef> filter = new List<PawnKindDef>();
 
 		public ModMain(ModContentPack content) : base(content) { }
@@ -59,16 +60,22 @@ namespace Foxy.AutoTraining {
 		}
 
 		private void DrawList(Listing_Standard listing) {
-			int count = Settings.IgnoredDefs.Count;
+			if (ignored == null) {
+				ignored = new List<PawnKindDef>();
+				foreach (string defName in Settings.KindFilter) {
+					PawnKindDef def = DefDatabase<PawnKindDef>.GetNamedSilentFail(defName);
+					if (def != null) ignored.Add(def);
+				}
+			}
+			int count = ignored.Count;
 			Rect listRect = listing.GetRect(5 * Text.LineHeight);
 			Rect viewRect = new Rect(0, 0, listRect.width - 32f, count * Text.LineHeight);
 			Rect rowRect = viewRect.TopPartPixels(Text.LineHeight);
 			rowRect.x = 16f;
 			Widgets.BeginScrollView(listRect, ref list_scroll, viewRect);
-
 			PawnKindDef removed = null;
 			bool even = false;
-			foreach (PawnKindDef def in Settings.IgnoredDefs) {
+			foreach (PawnKindDef def in ignored) {
 				bool hover = Mouse.IsOver(rowRect);
 				if (hover || even) {
 					Widgets.DrawRectFast(new Rect(0, rowRect.y, listRect.width - 16f, rowRect.height), hover ? HoverColor : EvenColor);
@@ -99,13 +106,13 @@ namespace Foxy.AutoTraining {
 				if (hover || even) {
 					Widgets.DrawRectFast(new Rect(0, rowRect.y, inRect.width - 16f, rowRect.height), hover ? HoverColor : EvenColor);
 				}
-				bool ignored = Settings.IgnoredDefs.Contains(def);
+				bool isIgnored = ignored.Contains(def);
 				rowRect.SplitVertically(rowRect.width - Text.LineHeight, out Rect leftRect, out Rect buttonRect);
 				rowRect.y += Text.LineHeight;
 				Widgets.LabelFit(leftRect.LeftHalf(), def.defName);
 				Widgets.LabelFit(leftRect.RightHalf(), def.LabelCap);
-				if (Widgets.ButtonText(buttonRect, ignored ? "-" : "+")) {
-					if (ignored) RemoveIgnoreDef(def);
+				if (Widgets.ButtonText(buttonRect, isIgnored ? "-" : "+")) {
+					if (isIgnored) RemoveIgnoreDef(def);
 					else AddIgnoreDef(def);
 				}
 				even = !even;
@@ -115,11 +122,13 @@ namespace Foxy.AutoTraining {
 		}
 
 		private void AddIgnoreDef(PawnKindDef def) {
-			Settings.IgnoredDefs.Add(def);
+			ignored.Add(def);
+			Settings.KindFilter.Add(def.defName);
 			list_scroll = Vector2.zero;
 		}
 		private void RemoveIgnoreDef(PawnKindDef def) {
-			Settings.IgnoredDefs.Remove(def);
+			ignored.Remove(def);
+			Settings.KindFilter.Remove(def.defName);
 			list_scroll = Vector2.zero;
 		}
 
